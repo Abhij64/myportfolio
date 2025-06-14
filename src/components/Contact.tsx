@@ -202,7 +202,7 @@ const Contact: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <a
-                    href="https://wa.me/8919564350"
+                    href="https://wa.me/918919564350"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-4 bg-gradient-to-br from-green-600/20 to-emerald-600/20 backdrop-blur-sm rounded-2xl border border-green-500/30 hover:border-green-400/50 transition-all duration-300 hover:scale-105 text-center"

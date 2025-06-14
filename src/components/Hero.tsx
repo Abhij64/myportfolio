@@ -80,25 +80,30 @@ const Hero: React.FC = () => {
           className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
           variants={itemVariants}
         >
-          <motion.button
-            className="group relative px-8 py-4 bg-gradient-to-r from-accent-parrot to-accent-electric rounded-full text-cyber-darker font-space font-semibold text-lg overflow-hidden"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <span className="relative z-10">View My Work</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-accent-electric to-accent-parrot opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </motion.button>
-          
-          <motion.button
-            className="group relative px-8 py-4 border-2 border-accent-parrot rounded-full text-accent-parrot font-space font-semibold text-lg overflow-hidden"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <span className="relative z-10 group-hover:text-cyber-darker transition-colors duration-300">
-              Get In Touch
-            </span>
-            <div className="absolute inset-0 bg-accent-parrot transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-          </motion.button>
+          <a href="#projects">
+            <motion.button
+                className="group relative px-8 py-4 bg-gradient-to-r from-accent-parrot to-accent-electric rounded-full text-cyber-darker font-space font-semibold text-lg overflow-hidden"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+            >
+              <span className="relative z-10">View My Work</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-accent-electric to-accent-parrot opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </motion.button>
+          </a>
+
+          <a href="#contact">
+            <motion.button
+                className="group relative px-8 py-4 border-2 border-accent-parrot rounded-full text-accent-parrot font-space font-semibold text-lg overflow-hidden"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+            >
+    <span className="relative z-10 group-hover:text-cyber-darker transition-colors duration-300">
+      Get In Touch
+    </span>
+              <div className="absolute inset-0 bg-accent-parrot transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+            </motion.button>
+          </a>
+
         </motion.div>
 
         <motion.div
