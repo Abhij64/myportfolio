@@ -103,7 +103,7 @@ const About: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-accent-parrot to-accent-electric rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
                 <motion.img
                     src="./img.jpeg"
-                    alt="Alex Thompson"
+                    alt="Abhiram Jai Gopal"
                     className="relative w-full rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-300"
                     whileHover={{ scale: 1.05 }}
                 />

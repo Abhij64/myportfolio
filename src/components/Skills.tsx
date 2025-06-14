@@ -173,14 +173,14 @@ const Skills = () => {
 
             {/* Hobbies & Interests Section */}
             <motion.div className="mt-20" variants={itemVariants}>
-              <h3 className="text-2xl font-bold text-white mb-8 border-l-4 border-blue-400 pl-4 text-left">
+              <h3 className="text-2xl font-bold text-white mb-8 border-l-4 border-green-400 pl-4 text-left">
                 {hobbiesCategory.title}
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 {hobbiesCategory.skills.map((skill, index) => (
                     <motion.div
                         key={skill.name}
-                        className="group bg-gray-900/30 backdrop-blur-sm rounded-xl p-6 border border-gray-800 hover:border-blue-400 transition-all duration-500 cursor-pointer"
+                        className="group bg-gray-900/30 backdrop-blur-sm rounded-xl p-6 border border-gray-800 hover:border-green-400 transition-all duration-500 cursor-pointer"
                         initial={{ opacity: 0, y: 20 }}
                         animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                         transition={{

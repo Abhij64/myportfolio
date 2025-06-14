@@ -1,224 +1,288 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { useForm } from 'react-hook-form';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
-
-interface FormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
+import React, { useEffect, useRef, useState } from 'react';
+import { Mail, MapPin, Phone, Send, MessageCircle, Calendar, Zap, CheckCircle, XCircle } from 'lucide-react';
 
 const Contact: React.FC = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
+  const [isVisible, setIsVisible] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const sectionRef = useRef<HTMLElement>(null);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        },
+        { threshold: 0.3 }
+    );
 
-  const onSubmit = (data: FormData) => {
-    console.log('Form submitted:', data);
-    // Handle form submission here
-    reset();
-  };
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.1
-      }
+    return () => observer.disconnect();
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    if (submitStatus !== 'idle') {
+      setSubmitStatus('idle');
     }
   };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('https://formspree.io/f/xnnvdwow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+        setErrorMessage(result?.errors?.[0]?.message || 'Something went wrong. Please try again.');
       }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitStatus('error');
+      setErrorMessage('Network error. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const socialLinks = [
-    { icon: Github, href: '#', color: 'accent-parrot', label: 'GitHub' },
-    { icon: Linkedin, href: '#', color: 'accent-electric', label: 'LinkedIn' },
-    { icon: Twitter, href: '#', color: 'accent-lavender', label: 'Twitter' },
+  const contactMethods = [
+    {
+      icon: Mail,
+      title: 'Email',
+      details: 'abhiramjaigopal@gmail.com',
+      link: 'mailto:abhiramjaigopal@gmail.com',
+      gradient: 'from-blue-500 to-cyan-500',
+      description: 'Drop me a line anytime',
+    },
+    {
+      icon: Phone,
+      title: 'Phone',
+      details: '+91 8919564350',
+      link: 'tel:+8919564350',
+      gradient: 'from-green-500 to-emerald-500',
+      description: "Let's have a conversation",
+    },
+    {
+      icon: MapPin,
+      title: 'Location',
+      details: 'Hyderabad, Telangana',
+      link: '#',
+      gradient: 'from-purple-500 to-pink-500',
+      description: 'Available worldwide',
+    },
   ];
 
   return (
-    <section id="contact" className="py-20 px-4 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-        >
-          <motion.div className="text-center mb-16" variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-space font-bold text-white mb-4">
-              Get In{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-parrot to-accent-electric">
-                Touch
-              </span>
+      <section ref={sectionRef} id="contact" className="py-32 px-6 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-indigo-900/10 to-black" />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className={`text-center mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+            <h2 className="text-5xl md:text-7xl font-black mb-8">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">CONNECT</span>
             </h2>
-            <p className="text-xl text-gray-300 font-inter max-w-3xl mx-auto">
-              Ready to bring your ideas to life? Let's discuss your next project and create something amazing together.
-            </p>
-          </motion.div>
+            <div className="h-2 w-24 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto rounded-full mb-12" />
+            <p className="text-2xl text-gray-300 max-w-3xl mx-auto">Ready to create something extraordinary together?</p>
+          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* Contact Info */}
-            <motion.div variants={itemVariants}>
-              <h3 className="text-2xl font-space font-bold text-white mb-8">
-                Let's Connect
-              </h3>
-              
-              <div className="space-y-6 mb-8">
-                <motion.div 
-                  className="flex items-center space-x-4 p-4 bg-cyber-gray/50 backdrop-blur-sm rounded-xl border border-accent-parrot/20"
-                  whileHover={{ scale: 1.02, borderColor: 'rgba(57, 255, 20, 0.4)' }}
-                >
-                  <div className="p-3 bg-accent-parrot/20 rounded-lg">
-                    <Mail className="w-6 h-6 text-accent-parrot" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-space font-semibold">Email</h4>
-                    <p className="text-gray-300">abhiramjaigopal@gmail.com</p>
-                  </div>
-                </motion.div>
+          <div className="grid lg:grid-cols-2 gap-16">
+            <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}>
+              <div className="relative p-8 bg-black/60 backdrop-blur-sm rounded-3xl border border-white/10">
+                <div className="mb-8">
+                  <h3 className="text-3xl font-bold text-white mb-4">Start a Conversation</h3>
+                  <p className="text-gray-400">Tell me about your vision, and let's bring it to life.</p>
+                </div>
 
-                <motion.div 
-                  className="flex items-center space-x-4 p-4 bg-cyber-gray/50 backdrop-blur-sm rounded-xl border border-accent-electric/20"
-                  whileHover={{ scale: 1.02, borderColor: 'rgba(0, 127, 255, 0.4)' }}
-                >
-                  <div className="p-3 bg-accent-electric/20 rounded-lg">
-                    <Phone className="w-6 h-6 text-accent-electric" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-space font-semibold">Phone</h4>
-                    <p className="text-gray-300">+91 8919564350</p>
-                  </div>
-                </motion.div>
+                {submitStatus === 'success' && (
+                    <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-2xl flex items-center space-x-3">
+                      <CheckCircle className="text-green-400" size={20} />
+                      <div>
+                        <p className="text-green-400 font-semibold">Message sent successfully!</p>
+                        <p className="text-gray-300 text-sm">I'll get back to you within 24 hours.</p>
+                      </div>
+                    </div>
+                )}
 
-                <motion.div 
-                  className="flex items-center space-x-4 p-4 bg-cyber-gray/50 backdrop-blur-sm rounded-xl border border-accent-lavender/20"
-                  whileHover={{ scale: 1.02, borderColor: 'rgba(230, 230, 250, 0.4)' }}
-                >
-                  <div className="p-3 bg-accent-lavender/20 rounded-lg">
-                    <MapPin className="w-6 h-6 text-accent-lavender" />
+                {submitStatus === 'error' && (
+                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center space-x-3">
+                      <XCircle className="text-red-400" size={20} />
+                      <div>
+                        <p className="text-red-400 font-semibold">Failed to send message</p>
+                        <p className="text-gray-300 text-sm">{errorMessage}</p>
+                      </div>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <InputField label="Your Name" name="name" value={formData.name} onChange={handleInputChange} />
+                    <InputField label="Email Address" name="email" type="email" value={formData.email} onChange={handleInputChange} />
                   </div>
-                  <div>
-                    <h4 className="text-white font-space font-semibold">Location</h4>
-                    <p className="text-gray-300">Hyderabad, India</p>
-                  </div>
-                </motion.div>
+                  <InputField label="Project Subject" name="subject" value={formData.subject} onChange={handleInputChange} />
+                  <TextareaField label="Your Vision" name="message" value={formData.message} onChange={handleInputChange} />
+                  <SubmitButton isSubmitting={isSubmitting} />
+                </form>
               </div>
+            </div>
 
-              {/* Social Links */}
-              <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
-                  <motion.a
-                    key={index}
-                    href={social.href}
-                    className={`p-4 bg-cyber-gray/50 backdrop-blur-sm rounded-xl border border-${social.color}/20 text-${social.color} hover:border-${social.color}/40 hover:shadow-lg hover:shadow-${social.color}/20 transition-all duration-300`}
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    aria-label={social.label}
-                  >
-                    <social.icon size={24} />
-                  </motion.a>
+            <div className={`space-y-8 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
+              <div className="space-y-6">
+                {contactMethods.map((method) => (
+                    <a
+                        key={method.title}
+                        href={method.link}
+                        className="group block p-6 bg-black/40 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className={`p-4 bg-gradient-to-br ${method.gradient} rounded-2xl group-hover:scale-110 transition-transform duration-300`}>
+                          <method.icon size={24} className="text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
+                            {method.title}
+                          </h4>
+                          <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">{method.details}</p>
+                          <p className="text-sm text-gray-500 mt-1">{method.description}</p>
+                        </div>
+                      </div>
+                    </a>
                 ))}
               </div>
-            </motion.div>
 
-            {/* Contact Form */}
-            <motion.div variants={itemVariants}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <motion.input
-                      {...register('name', { required: 'Name is required' })}
-                      type="text"
-                      placeholder="Your Name"
-                      className="w-full px-4 py-3 bg-cyber-gray/50 backdrop-blur-sm border border-accent-parrot/20 rounded-xl text-white placeholder-gray-400 focus:border-accent-parrot focus:outline-none focus:ring-2 focus:ring-accent-parrot/20 transition-all duration-300"
-                      whileFocus={{ scale: 1.02 }}
-                    />
-                    {errors.name && (
-                      <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>
-                    )}
+              <div className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm rounded-2xl border border-green-500/30">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="relative">
+                    <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse" />
+                    <div className="absolute inset-0 w-4 h-4 bg-green-400 rounded-full animate-ping" />
                   </div>
-
-                  <div>
-                    <motion.input
-                      {...register('email', { 
-                        required: 'Email is required',
-                        pattern: {
-                          value: /^\S+@\S+$/i,
-                          message: 'Invalid email address'
-                        }
-                      })}
-                      type="email"
-                      placeholder="Your Email"
-                      className="w-full px-4 py-3 bg-cyber-gray/50 backdrop-blur-sm border border-accent-electric/20 rounded-xl text-white placeholder-gray-400 focus:border-accent-electric focus:outline-none focus:ring-2 focus:ring-accent-electric/20 transition-all duration-300"
-                      whileFocus={{ scale: 1.02 }}
-                    />
-                    {errors.email && (
-                      <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
-                    )}
+                  <span className="text-green-400 font-bold text-lg">Available for Projects</span>
+                </div>
+                <p className="text-gray-300 mb-4">
+                  Currently accepting new client work and exciting collaborations. Let's create something amazing together!
+                </p>
+                <div className="flex items-center space-x-4 text-sm text-gray-400">
+                  <div className="flex items-center space-x-2">
+                    <Calendar size={16} />
+                    <span>Response within 24h</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Zap size={16} />
+                    <span>Fast turnaround</span>
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  <motion.input
-                    {...register('subject', { required: 'Subject is required' })}
-                    type="text"
-                    placeholder="Subject"
-                    className="w-full px-4 py-3 bg-cyber-gray/50 backdrop-blur-sm border border-accent-lavender/20 rounded-xl text-white placeholder-gray-400 focus:border-accent-lavender focus:outline-none focus:ring-2 focus:ring-accent-lavender/20 transition-all duration-300"
-                    whileFocus={{ scale: 1.02 }}
-                  />
-                  {errors.subject && (
-                    <p className="text-red-400 text-sm mt-1">{errors.subject.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <motion.textarea
-                    {...register('message', { required: 'Message is required' })}
-                    rows={6}
-                    placeholder="Your Message"
-                    className="w-full px-4 py-3 bg-cyber-gray/50 backdrop-blur-sm border border-accent-peach/20 rounded-xl text-white placeholder-gray-400 focus:border-accent-peach focus:outline-none focus:ring-2 focus:ring-accent-peach/20 transition-all duration-300 resize-none"
-                    whileFocus={{ scale: 1.02 }}
-                  />
-                  {errors.message && (
-                    <p className="text-red-400 text-sm mt-1">{errors.message.message}</p>
-                  )}
-                </div>
-
-                <motion.button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-accent-parrot to-accent-electric text-cyber-darker font-space font-semibold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-accent-parrot/30 transition-all duration-300 flex items-center justify-center space-x-2"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
+              <div className="grid grid-cols-2 gap-4">
+                <a
+                    href="https://wa.me/8919564350"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-4 bg-gradient-to-br from-green-600/20 to-emerald-600/20 backdrop-blur-sm rounded-2xl border border-green-500/30 hover:border-green-400/50 transition-all duration-300 hover:scale-105 text-center"
                 >
-                  <Send size={20} />
-                  <span>Send Message</span>
-                </motion.button>
-              </form>
-            </motion.div>
+                  <MessageCircle size={24} className="text-green-400 mx-auto mb-2" />
+                  <span className="text-white font-semibold text-sm">WhatsApp</span>
+                </a>
+              </div>
+            </div>
           </div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
   );
 };
+
+// Reusable Input field component
+const InputField = ({ label, name, value, onChange, type = "text" }: any) => (
+    <div className="relative">
+      <input
+          type={type}
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          required
+          className="w-full px-6 py-4 bg-white/5 border border-white/20 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 text-white placeholder-transparent peer"
+          placeholder=" "
+      />
+      <label
+          htmlFor={name}
+          className="absolute left-6 -top-2.5 bg-black px-2 text-sm text-purple-400 font-medium transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-purple-400"
+      >
+        {label}
+      </label>
+    </div>
+);
+
+// Reusable Textarea
+const TextareaField = ({ label, name, value, onChange }: any) => (
+    <div className="relative">
+    <textarea
+        id={name}
+        name={name}
+        value={value}
+        onChange={onChange}
+        required
+        rows={6}
+        className="w-full px-6 py-4 bg-white/5 border border-white/20 rounded-2xl focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 text-white placeholder-transparent resize-none peer"
+        placeholder=" "
+    />
+      <label
+          htmlFor={name}
+          className="absolute left-6 -top-2.5 bg-black px-2 text-sm text-purple-400 font-medium transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-400 peer-focus:-top-2.5 peer-focus:text-purple-400"
+      >
+        {label}
+      </label>
+    </div>
+);
+
+// Reusable Submit Button
+const SubmitButton = ({ isSubmitting }: { isSubmitting: boolean }) => (
+    <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl font-bold hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <div className="flex items-center justify-center space-x-3">
+        {isSubmitting ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Sending...</span>
+            </>
+        ) : (
+            <>
+              <span>Send Message</span>
+              <Send size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
+            </>
+        )}
+      </div>
+    </button>
+);
 
 export default Contact;
