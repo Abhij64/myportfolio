@@ -14,7 +14,7 @@ const Projects: React.FC = () => {
     'All',
     'AI Educational Platform',
     'Social Impact Platform',
-    'Smart Transportation Platform',
+    'AI-Powered Analytics Platform',
     'Productivity Application'
   ];
 

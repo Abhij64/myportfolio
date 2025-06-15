@@ -12,7 +12,7 @@ export const projects = [
         skills: ['Python', 'Django', 'ReactJS', 'Machine Learning', 'Speech Recognition'],
         demoLink: 'https://f-easy.vercel.app/',
         githubLink: 'https://github.com/Abhij64/farm-easy-django',
-        type: 'AI Educational Platform',
+        type: 'Social Impact Platform',
         timeline: '2024',
         duration: '2 months',
         role: 'Lead Developer'
@@ -30,7 +30,7 @@ export const projects = [
         skills: ['ReactJS', 'Python', 'Flask', 'Mapbox', 'Scikit-learn'],
         demoLink: 'https://restateai.vercel.app/',
         githubLink: 'https://github.com/Abhij64/ReState-react_native-app',
-        type: 'Smart Transportation Platform',
+        type: 'AI-Powered Analytics Platform',
         timeline: '2024',
         duration: '2 months',
         role: 'AI Developer'
