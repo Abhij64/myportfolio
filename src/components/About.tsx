@@ -59,20 +59,18 @@ const About: React.FC = () => {
                   className="text-lg text-gray-300 font-inter leading-relaxed mb-6"
                   variants={itemVariants}
               >
-                I'm a passionate Full Stack Developer with 5+ years of experience creating
-                digital solutions that bridge the gap between design and functionality.
-                My journey began with a curiosity for how things work and evolved into
-                a love for crafting elegant, efficient code.
+                Hey! I'm a passionate Full Stack Web Developer, UI/UX Designer, and tech enthusiast who
+                loves turning ideas into interactive digital experiences. As a student constantly exploring the
+                world of development, I enjoy buildin
+                g sleek interfaces, solving backend challenges, and experimenting with the latest tech stacks.
               </motion.p>
 
               <motion.p
                   className="text-lg text-gray-300 font-inter leading-relaxed mb-8"
                   variants={itemVariants}
               >
-                When I'm not coding, you'll find me exploring new technologies,
-                contributing to open-source projects, or sharing knowledge with
-                the developer community. I believe in continuous learning and
-                staying ahead of the curve in this ever-evolving field.
+                When I'm not coding, you’ll find me gaming, sketching UI ideas, or diving into new tools just for the fun of learning.
+                I'm always excited to take on new challenges, work with creative minds, and keep growing in this fast-paced tech world.
               </motion.p>
 
               <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-6" variants={itemVariants}>
