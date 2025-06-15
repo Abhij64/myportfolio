@@ -111,7 +111,7 @@ const Skills = () => {
                 What I do
               </h2>
               <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-                I am from Pakistan and currently living in Karachi. I am doing Bachelor's in Software engineering and I will graduate in the year 2021. I am UI Ux designer and currently working as a freelancer.
+                I'm a Full Stack Developer from Hyderabad, India. I build clean, efficient, and user-friendly web apps. Have a look at my tech stack below!
               </p>
             </motion.div>
 
